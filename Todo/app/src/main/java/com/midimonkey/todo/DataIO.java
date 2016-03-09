@@ -88,18 +88,18 @@ public class DataIO extends SQLiteOpenHelper
     {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor =  db.rawQuery("SELECT * FROM " + TASKS_TABLE_NAME, null);
-        ArrayList<Task> favors = new ArrayList<>();
-        Task favor = null;
+        ArrayList<Task> tasks = new ArrayList<>();
+        Task task;
         if (cursor != null && cursor.moveToFirst())
         {
             do
             {
-                favor = new Task(cursor.getInt(0), cursor.getString(1));
-                favors.add(favor);
+                task = new Task(cursor.getInt(0), cursor.getString(1));
+                tasks.add(task);
             } while (cursor.moveToNext());
         }
         db.close();
-        return favors;
+        return tasks;
     }
 
     public void close()

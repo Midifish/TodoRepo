@@ -9,14 +9,10 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity
 {
     private DataIO database;
-    private ArrayList<String> taskDescriptions;
     private ListView taskListView;
-    private ArrayList<Task> tasks;
     private SimpleCursorAdapter taskListAdapter;
 
     @Override
@@ -25,54 +21,46 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         database = new DataIO(this);
-        taskDescriptions = new ArrayList<>();
+        updateList();
         taskListView = (ListView) findViewById(R.id.taskList);
-        tasks = new ArrayList<>();
-        taskListAdapter = new SimpleCursorAdapter(this,
+        taskListAdapter = new SimpleCursorAdapter
+                (
+                this,
                 android.R.layout.simple_list_item_1,
                 database.getCursor(),
                 new String[] { "description" },
                 new int[] { android.R.id.text1 },
-                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
-        checkForAddedTask();
-        checkForEditedTask();
-        checkForDeletedTask();
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER
+                );
         taskListView.setAdapter(taskListAdapter);
-
-        taskListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        taskListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
                 taskListAdapter.getCursor().moveToPosition(position);
                 openEditTaskActivity(database.getTask(taskListAdapter.getCursor().getInt(0)));
             }
         });
     }
 
-    public void checkForAddedTask()
+    /*
+        Called to see if any other activity in the app has made a change to the list
+     */
+    public void updateList()
     {
-        Task addedTask = (Task) getIntent().getSerializableExtra("AddedTask");
-        if(addedTask != null)
+        Task updatedTask;
+        if((updatedTask = (Task) getIntent().getSerializableExtra("AddedTask")) != null)
         {
-            database.addTask(addedTask);
-            taskListAdapter.notifyDataSetChanged();
+            database.addTask(updatedTask);
         }
-    }
-
-    public void checkForEditedTask()
-    {
-        Task editedTask = (Task) getIntent().getSerializableExtra("EditedTask");
-        if(editedTask != null)
+        else if((updatedTask = (Task) getIntent().getSerializableExtra("DeletedTask")) != null)
         {
-            database.editTask(editedTask);
+            database.deleteTask(updatedTask);
         }
-    }
-
-    public void checkForDeletedTask()
-    {
-        Task deletedTask = (Task) getIntent().getSerializableExtra("DeletedTask");
-        if(deletedTask != null)
+        else if((updatedTask = (Task) getIntent().getSerializableExtra("EditedTask")) != null)
         {
-            database.deleteTask(deletedTask);
+            database.editTask(updatedTask);
         }
     }
 
