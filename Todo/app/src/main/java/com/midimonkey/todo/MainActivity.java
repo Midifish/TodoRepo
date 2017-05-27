@@ -1,6 +1,7 @@
 package com.midimonkey.todo;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +22,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         database = new DataIO(this);
-        updateList();
         taskListView = (ListView) findViewById(R.id.taskList);
         taskListAdapter = new SimpleCursorAdapter
                 (
@@ -44,36 +44,35 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    /*
-        Called to see if any other activity in the app has made a change to the list
-     */
-    public void updateList()
-    {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Task updatedTask;
-        if((updatedTask = (Task) getIntent().getSerializableExtra("AddedTask")) != null)
+        if(requestCode == 0)
         {
+            updatedTask = (Task) data.getSerializableExtra("AddedTask");
             database.addTask(updatedTask);
         }
-        else if((updatedTask = (Task) getIntent().getSerializableExtra("DeletedTask")) != null)
+        else if(requestCode == 1)
         {
-            database.deleteTask(updatedTask);
+            if((updatedTask = (Task) data.getSerializableExtra("DeletedTask")) != null)
+                database.deleteTask(updatedTask);
+            else if((updatedTask = (Task) data.getSerializableExtra("EditedTask")) != null)
+                database.editTask(updatedTask);
         }
-        else if((updatedTask = (Task) getIntent().getSerializableExtra("EditedTask")) != null)
-        {
-            database.editTask(updatedTask);
-        }
+        taskListAdapter.swapCursor(database.getCursor());
+        taskListAdapter.notifyDataSetChanged();
     }
 
     public void openAddTaskActivity(View v)
     {
         Intent intent = new Intent(this, AddActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,0);
     }
 
     public void openEditTaskActivity(Task task)
     {
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("taskToEdit", task);
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
 }

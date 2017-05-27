@@ -1,5 +1,6 @@
 package com.midimonkey.todo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,13 +28,15 @@ public class EditActivity extends AppCompatActivity
         taskToEdit.setDescription(taskDescriptionTextBox.getText().toString());
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("EditedTask", taskToEdit);
-        startActivity(intent);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     public void deleteTask(View v)
     {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("DeletedTask", taskToEdit);
-        startActivity(intent);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }
