@@ -46,21 +46,23 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Task updatedTask;
-        if(requestCode == 0)
-        {
-            updatedTask = (Task) data.getSerializableExtra("AddedTask");
-            database.addTask(updatedTask);
+        if(data != null) {
+            Task updatedTask;
+            if(requestCode == 0)
+            {
+                updatedTask = (Task) data.getSerializableExtra("AddedTask");
+                database.addTask(updatedTask);
+            }
+            else if(requestCode == 1)
+            {
+                if((updatedTask = (Task) data.getSerializableExtra("DeletedTask")) != null)
+                    database.deleteTask(updatedTask);
+                else if((updatedTask = (Task) data.getSerializableExtra("EditedTask")) != null)
+                    database.editTask(updatedTask);
+            }
+            taskListAdapter.swapCursor(database.getCursor());
+            taskListAdapter.notifyDataSetChanged();
         }
-        else if(requestCode == 1)
-        {
-            if((updatedTask = (Task) data.getSerializableExtra("DeletedTask")) != null)
-                database.deleteTask(updatedTask);
-            else if((updatedTask = (Task) data.getSerializableExtra("EditedTask")) != null)
-                database.editTask(updatedTask);
-        }
-        taskListAdapter.swapCursor(database.getCursor());
-        taskListAdapter.notifyDataSetChanged();
     }
 
     public void openAddTaskActivity(View v)

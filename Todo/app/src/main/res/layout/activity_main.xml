@@ -1,23 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/lib/com.midimonkey.todo"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.midimonkey.todo.MainActivity">
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add new task"
-        android:id="@+id/addBtn"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="openAddTaskActivity"/>
 
     <ListView
         android:layout_width="wrap_content"
@@ -30,5 +17,18 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:choiceMode="singleChoice" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:onClick="openAddTaskActivity"
+        android:src="@drawable/ic_add_24dp"
+        android:text="Add new task"
+        />
 
 </RelativeLayout>
